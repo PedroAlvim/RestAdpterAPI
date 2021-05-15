@@ -36,6 +36,11 @@ def print_university(university: dict):
 
 
 class TestUniversityAPI(unittest.TestCase):
+    """
+    To this tests work:
+        go to API directory and run:
+        'python3 manage.py runserver'
+    """
     unifei = {'id': 74,
               'name': 'Universidade Federal de Itajubá',
               'country': 'Brazil',
