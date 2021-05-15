@@ -17,7 +17,7 @@ def get_request(url, params=None, **kwargs):
     return response
 
 
-def search_university(text: str):
+def search_university_by_domain(text: str):
     return get_request(f'{MAIN_URL}{SEARCH_URL}{text}')
 
 
@@ -45,7 +45,7 @@ class TestUniversityAPI(unittest.TestCase):
               'web_pages': ['https://unifei.edu.br/']}
 
     def test_search(self):
-        response = search_university('unifei')
+        response = search_university_by_domain('unifei')
         self.assertIsNot(response.json(), [])
 
         print_university(response.json()[0])
