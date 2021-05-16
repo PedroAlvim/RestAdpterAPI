@@ -55,7 +55,6 @@ class University(models.Model):
             for page in web_pages:
                 WebPages.objects.create(page=page, university=obj)
 
-            obj.save()
         return obj, True
 
     @staticmethod
