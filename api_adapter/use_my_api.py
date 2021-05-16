@@ -11,8 +11,9 @@ UNIVERSITY_URL = 'universities/'
 def get_request(url, params=None, **kwargs):
     try:
         response = requests.get(url, params, **kwargs)
+        response.raise_for_status()
     except Exception as e:
-        raise ConnectionError('Check if you start the server with: python django runserver. Error: {}'.format(e))
+        raise ConnectionError('Check if you start the server with: python django runserver. Error: \n{}'.format(e))
 
     return response
 

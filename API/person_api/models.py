@@ -1,4 +1,5 @@
-from typing import Any
+import warnings
+from typing import Optional
 
 from django.db import models
 
@@ -7,6 +8,7 @@ from django.db import models
 
 
 class Domain(models.Model):
+
     domain = models.CharField(max_length=64)
     university = models.ForeignKey('University', on_delete=models.CASCADE, null=True, blank=True,
                                    related_name='domains')
@@ -56,33 +58,39 @@ class University(models.Model):
             obj.save()
         return obj, True
 
-    # TODO CASE of just name and country matters, if they are frozen attributes
-    # @staticmethod
-    # def update_or_create(name: str, country: str, domains: list[str], web_pages: list[str],
-    #                      alpha_two_code: Optional[str] = None, state_province: Optional[str] = None):
-    #     obj, created = University.objects.update_or_create(name=name,
-    #                                                        country=country,
-    #                                                        defaults={'alpha_two_code': alpha_two_code,
-    #                                                                  'state_province': state_province})
-    #     if not created:
-    #         print('Updating {.name}'.format(obj), '\n')
-    #
-    #     # updating existing domains with the new ones
-    #     for existing_domain in obj.domains.all():
-    #         if existing_domain.domain not in domains:
-    #             existing_domain.delete()
-    #         else:
-    #             domains.remove(existing_domain.domain)
-    #     for domain in domains:
-    #         Domain.objects.create(domain=domain, university=obj)
-    #
-    #     # updating existing web_pages with the new ones
-    #     for existing_web_page in obj.web_pages.all():
-    #         if existing_web_page.page not in web_pages:
-    #             existing_web_page.delete()
-    #         else:
-    #             web_pages.remove(existing_web_page.page)
-    #     for page in web_pages:
-    #         WebPages.objects.create(page=page, university=obj)
-    #
-    #     return obj
+    @staticmethod
+    def update_or_create(name: str, country: str, domains: list[str], web_pages: list[str],
+                         alpha_two_code: Optional[str] = None, state_province: Optional[str] = None):
+        """
+        !!! CASE of just name and country matters, if they were frozen attributes
+         what isn't true in third party University API, there's no frozen id in University Objects
+         2 Universities can have the same name, but they can be different.
+        """
+        warnings.warn("update_or_create() is deprecated; use create_if_not_exist().", DeprecationWarning)
+
+        obj, created = University.objects.update_or_create(name=name,
+                                                           country=country,
+                                                           defaults={'alpha_two_code': alpha_two_code,
+                                                                     'state_province': state_province})
+        if not created:
+            print('Updating {.name}'.format(obj), '\n')
+
+        # updating existing domains with the new ones
+        for existing_domain in obj.domains.all():
+            if existing_domain.domain not in domains:
+                existing_domain.delete()
+            else:
+                domains.remove(existing_domain.domain)
+        for domain in domains:
+            Domain.objects.create(domain=domain, university=obj)
+
+        # updating existing web_pages with the new ones
+        for existing_web_page in obj.web_pages.all():
+            if existing_web_page.page not in web_pages:
+                existing_web_page.delete()
+            else:
+                web_pages.remove(existing_web_page.page)
+        for page in web_pages:
+            WebPages.objects.create(page=page, university=obj)
+
+        return obj

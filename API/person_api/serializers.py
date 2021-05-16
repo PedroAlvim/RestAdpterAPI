@@ -16,4 +16,4 @@ class UniversitySerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = University
-        fields = ('id', 'name', 'country', 'alpha_two_code', 'state_province', 'domains', 'web_pages')
+        fields = ['id', 'name', 'country', 'alpha_two_code', 'state_province', 'domains', 'web_pages']

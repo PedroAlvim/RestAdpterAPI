@@ -1,5 +1,6 @@
 # Create your views here.
-from rest_framework import viewsets, generics, filters
+from rest_framework import viewsets, generics, filters, mixins
+from rest_framework.viewsets import GenericViewSet
 
 from .models import University
 from .serializers import UniversitySerializer
@@ -10,7 +11,9 @@ class UniversityViewSet(viewsets.ModelViewSet):
     serializer_class = UniversitySerializer
 
 
-class UniversityAPIView(generics.ListCreateAPIView):
+class UniversityAPIView(mixins.ListModelMixin,
+                        mixins.CreateModelMixin,
+                        GenericViewSet):
     search_fields = ['domains__domain']
     filter_backends = (filters.SearchFilter,)
     queryset = University.objects.all()
