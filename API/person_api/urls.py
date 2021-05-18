@@ -5,8 +5,7 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register(r'universities', views.UniversityViewSet, basename='universities')
-router.register(r'search', views.UniversityAPIView, basename='search')
-
+# router.register(r'universities/search', views.UniversitySearchView, basename='search')
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [

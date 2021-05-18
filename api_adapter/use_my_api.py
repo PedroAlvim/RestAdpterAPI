@@ -3,8 +3,7 @@ import unittest
 import requests
 
 MAIN_URL = 'http://127.0.0.1:8000/'
-
-SEARCH_URL = 'search/?search='
+SEARCH_URL = ''
 UNIVERSITY_URL = 'universities/'
 
 
@@ -50,12 +49,12 @@ class TestUniversityAPI(unittest.TestCase):
               'domains': ['unifei.edu.br'],
               'web_pages': ['https://unifei.edu.br/']}
 
-    def test_search(self):
-        response = search_university_by_domain('unifei')
-        self.assertIsNot(response.json(), [])
-
-        print_university(response.json()[0])
-        self.assertEqual(response.json()[0], self.unifei)
+    # def test_search_by_name_receiving_all_fields(self):
+    #     response = search_university('unifei')
+    #     self.assertIsNot(response.json(), [])
+    #
+    #     print_university(response.json()[0])
+    #     self.assertEqual(response.json()[0], self.unifei)
 
     def test_get_university_by_key(self):
         response = get_university_by_key(74)

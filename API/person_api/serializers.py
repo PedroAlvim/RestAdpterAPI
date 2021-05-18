@@ -3,16 +3,31 @@ from rest_framework import serializers
 from .models import University
 
 
-class UniversitySerializer(serializers.HyperlinkedModelSerializer):
-    name = serializers.CharField(max_length=132)
-    country = serializers.CharField(max_length=32)
-    alpha_two_code = serializers.CharField(max_length=2)
-    state_province = serializers.CharField(max_length=32, allow_blank=True, required=False)
+class DynamicFieldsModelSerializer(serializers.ModelSerializer):
+    """
+    A ModelSerializer that takes an additional `fields` argument that
+    controls which fields should be displayed.
+    """
+
+    def __init__(self, *args, **kwargs):
+        # Instantiate the superclass normally
+        super(DynamicFieldsModelSerializer, self).__init__(*args, **kwargs)
+
+        fields = self.context['request'].query_params.get('fields')
+        print('request: ', self.context['request'].query_params)
+        if fields:
+            fields = fields.split(',')
+            # Drop any fields that are not specified in the `fields` argument.
+
+            allowed = set(fields)
+            existing = set(self.fields.keys())
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
+
+
+class UniversitySerializer(DynamicFieldsModelSerializer):
     domains = serializers.StringRelatedField(many=True)
     web_pages = serializers.StringRelatedField(many=True)
-
-    # domain
-    # web_pages
 
     class Meta:
         model = University
